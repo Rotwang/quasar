@@ -1,16 +1,19 @@
 CC = gcc
 CPPFLAGS += `curl-config --cflags`
+CPPFLAGS += `xml2-config --cflags`
 CFLAGS += -MMD -Wall -Wextra -pedantic -ansi -ggdb3
 LDFLAGS += `curl-config --libs`
+LDFLAGS += `xml2-config --libs`
+OBJS := main.o quasar.o fetch.o parse.o
 
-.PHONY: all
+.PHONY: all clean
 
 all: quasar
 
-quasar: quasar.o
-	$(CC) -o $@ $< $(LDFLAGS)
+quasar: $(OBJS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
-	rm -f *.o quasar
+	-rm -rf *.o *.d quasar
 
 -include $(wildcard *.d)
