@@ -1,6 +1,20 @@
 #include "parse.h"
 
-int parse(const char *content, int length) {
+static void
+parse(xmlNode *a_node) {
+	xmlNode *cur_node = NULL;
+
+	for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+		//if (cur_node->type == XML_ELEMENT_NODE) {
+			printf("- %s\n", cur_node->name);
+			printf("- %s\n", cur_node->content);
+		//}
+		parse(cur_node->children);
+	}
+}
+
+
+int show(const char *content, const int length, const char *pattern) {
 	LIBXML_TEST_VERSION
 
 	xmlDocPtr doc;
@@ -8,17 +22,13 @@ int parse(const char *content, int length) {
 	if (doc == NULL) {
 		return 0;
 	}
-	
-	xmlNode *a_node = xmlDocGetRootElement(doc);
-	xmlNode *cur_node = NULL;
-	for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
-        if (cur_node->type == XML_ELEMENT_NODE) {
-            printf("node type: Element, name: %s\n", cur_node->name);
-        }
-	}
-	
+
+	xmlNode *root_element = xmlDocGetRootElement(doc);
+	parse(root_element);
+
 	xmlFreeDoc(doc);
 
 	xmlCleanupParser();
+
 	return 1;
 }
