@@ -1,34 +1,35 @@
 #include "parse.h"
 
-static void
-parse(xmlNode *a_node) {
+void parse_elem(xmlNode *a_node) {
 	xmlNode *cur_node = NULL;
 
 	for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
 		//if (cur_node->type == XML_ELEMENT_NODE) {
 			printf("- %s\n", cur_node->name);
 			printf("- %s\n", cur_node->content);
+			printf("- %d\n", cur_node->type);
+			printf("-----\n");
 		//}
-		parse(cur_node->children);
+		parse_elem(cur_node->children);
 	}
 }
 
-
-int show(const char *content, const int length, const char *pattern) {
+portdb *parse(const char *content, const int length) {
 	LIBXML_TEST_VERSION
 
 	xmlDocPtr doc;
 	doc = xmlReadMemory(content, length, "noname.xml", NULL, 0);
 	if (doc == NULL) {
-		return 0;
+		// spawn ze error
 	}
 
 	xmlNode *root_element = xmlDocGetRootElement(doc);
-	parse(root_element);
+	parse_elem(root_element);
 
 	xmlFreeDoc(doc);
 
 	xmlCleanupParser();
-
-	return 1;
+	
+	portdb *a;
+	return a;
 }

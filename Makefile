@@ -1,4 +1,3 @@
-CC = gcc
 CPPFLAGS += `curl-config --cflags`
 CPPFLAGS += `xml2-config --cflags`
 #CFLAGS += -MMD -Wall -Wextra -pedantic -ansi -ggdb3

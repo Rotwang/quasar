@@ -8,6 +8,19 @@
 #error Tree support not compiled into libxml2!
 #endif
 
-#include <stdio.h>
+struct _portdb {
+	char *name;
+	char *repo;
+	char *pkgfile;
+	char *footprint;
+	char *md5sum;
+	char *command;
+	struct _portdb *next;
+};
+
+typedef struct _portdb portdb;
+
+void parse_elem(xmlNode *);
+portdb *parse(const char *, const int); 
 
 #endif /* PARSE_H */
