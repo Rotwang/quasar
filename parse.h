@@ -3,24 +3,30 @@
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
+
+#include <string.h>
 
 #ifndef LIBXML_TREE_ENABLED
 #error Tree support not compiled into libxml2!
 #endif
 
+typedef struct _portdb portdb;
+
 struct _portdb {
-	char *name;
-	char *repo;
+	char *port;
+	char *collection;
 	char *pkgfile;
 	char *footprint;
 	char *md5sum;
 	char *command;
-	struct _portdb *next;
+	portdb *next;
 };
 
-typedef struct _portdb portdb;
+
 
 void parse_elem(xmlNode *);
-portdb *parse(const char *, const int); 
+portdb *parse(const char *); 
 
 #endif /* PARSE_H */

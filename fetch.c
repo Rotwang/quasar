@@ -16,11 +16,9 @@ const char *creat_url(const char * pdb_url, const char * pat, bool s) {
 	length += strlen(fixed_qery_b);
 	length += strlen(pat);
 	char *url = malloc(length + 1);
-	strcpy(url, pdb_url);
-	strcat(url, fixed_qery_a);
-	strcat(url, strict);
-	strcat(url, fixed_qery_b);
-	return strcat(url, pat);
+	sprintf(url, "%s%s%s%s%s",
+		pdb_url, fixed_qery_a, strict, fixed_qery_b, pat);
+	return url;
 }
 
 size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
@@ -34,13 +32,14 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
 }
 
 /* return NULL terminated portdb xml */
-xml fetch_xml(const char *pat, bool strict) {
+const char *fetch_xml(const char *pat, bool strict) {
 	CURL *curl;
 	CURLcode res;
 	// free() url
 	const char *url = creat_url(PORTDB_URL, pat, strict);
 
 	xml cdata = { .data = 0,.size = 1 };
+	// allocate memory for NULL
 	cdata.data = calloc(1, 1);
 
 	curl = curl_easy_init();
@@ -54,5 +53,5 @@ xml fetch_xml(const char *pat, bool strict) {
 		/* obsluzyc bledy */
 	}
 	free(url);
-	return cdata;
+	return cdata.data;
 }

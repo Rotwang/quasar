@@ -1,4 +1,5 @@
 #include "parse.h"
+/* http://xmlsoft.org/examples/xpath1.c */
 
 void parse_elem(xmlNode *a_node) {
 	xmlNode *cur_node = NULL;
@@ -13,23 +14,83 @@ void parse_elem(xmlNode *a_node) {
 		parse_elem(cur_node->children);
 	}
 }
+void
+print_xpath_nodes(xmlNodeSetPtr nodes, FILE* output) {
+    xmlNodePtr cur;
+    int size;
+    int i;
+    
+    size = (nodes) ? nodes->nodeNr : 0;
+    
+    fprintf(output, "Result (%d nodes):\n", size);
+    for(i = 0; i < size; ++i) {
+	
+	if(nodes->nodeTab[i]->type == XML_NAMESPACE_DECL) {
+	    xmlNsPtr ns;
+	    
+	    ns = (xmlNsPtr)nodes->nodeTab[i];
+	    cur = (xmlNodePtr)ns->next;
+	    if(cur->ns) { 
+	        fprintf(output, "= namespace \"%s\"=\"%s\" for node %s:%s\n", 
+		    ns->prefix, ns->href, cur->ns->href, cur->name);
+	    } else {
+	        fprintf(output, "= namespace \"%s\"=\"%s\" for node %s\n", 
+		    ns->prefix, ns->href, cur->name);
+	    }
+	} else if(nodes->nodeTab[i]->type == XML_ELEMENT_NODE) {
+	    cur = nodes->nodeTab[i];   	    
+	    if(cur->ns) { 
+    	        fprintf(output, "= element node \"%s:%s\"\n", 
+		    cur->ns->href, cur->name);
+	    } else {
+    	        fprintf(output, "= element node \"%s\"\n", 
+		    cur->name);
+	    }
+	} else {
+	    cur = nodes->nodeTab[i];    
+	    fprintf(output, "= node \"%s\": type %d\n", cur->name, cur->type);
+	}
+    }
+}
 
-portdb *parse(const char *content, const int length) {
+portdb *parse(const char *content) {
+	xmlInitParser();
 	LIBXML_TEST_VERSION
 
+
+	const xmlChar* xpathExpr = BAD_CAST "/ports/port/files";
 	xmlDocPtr doc;
+	xmlXPathContextPtr xpathCtx;
+	xmlXPathObjectPtr xpathObj;
+	
+
+	size_t length = strlen(content);
 	doc = xmlReadMemory(content, length, "noname.xml", NULL, 0);
 	if (doc == NULL) {
 		// spawn ze error
 	}
 
-	xmlNode *root_element = xmlDocGetRootElement(doc);
-	parse_elem(root_element);
-
-	xmlFreeDoc(doc);
-
-	xmlCleanupParser();
+	xpathCtx = xmlXPathNewContext(doc);
+	if (xpathCtx == NULL) {
+		xmlFreeDoc(doc); 
+		return((portdb *)0);
+	}
 	
-	portdb *a;
-	return a;
+	xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+	if(xpathObj == NULL) {
+		xmlXPathFreeContext(xpathCtx); 
+		xmlFreeDoc(doc); 
+		// return error
+	}
+	
+	print_xpath_nodes(xpathObj->nodesetval, stdout);
+	
+	
+	
+	xmlXPathFreeObject(xpathObj);
+	xmlXPathFreeContext(xpathCtx);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+
+	return((portdb *)0);
 }
