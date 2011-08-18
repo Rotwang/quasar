@@ -1,23 +1,44 @@
 #include "fetch.h"
 
+const char *url_query(const char *domain, ...) {
+	char *url, *k, *v, *sep;
+	sep = URL_GET_SEP;
+	size_t length = strlen(domain);
+	url = malloc(length + 1); /* + NULL */
+	strcpy(url, domain);
+	va_list ap;
+	va_start(ap, domain);
+	while ((k = va_arg(ap, char *)) != NUL) {
+		v = va_arg(ap, char *);
+		if (v == NUL) break;
+		length += strlen(k);
+		length += strlen(v);
+		url = realloc(url, length + strlen(sep) + strlen(URL_KV_SEP));
+		strcat(url, sep);
+		sep = URL_PAIR_SEP;
+		strcat(url, k);
+		strcat(url, URL_KV_SEP);
+		strcat(url, v);
+	}
+	va_end(ap);
+	return url;
+}
+
 const char *creat_url(const char * pdb_url, const char * pat, bool s) {
-	// warning, little monsters live in here
-	const char fixed_qery_a[] = "?f=xml&a=search&s=";
-	const char fixed_qery_b[] = "&q=";
-	const char strict[6];
+	char strict[6];
 	if (s)
 		strcpy(strict, "true");
 	else
 		strcpy(strict, "false");
-	
-	size_t length = strlen(pdb_url);
-	length += strlen(fixed_qery_a);
-	length += strlen(strict);
-	length += strlen(fixed_qery_b);
-	length += strlen(pat);
-	char *url = malloc(length + 1);
-	sprintf(url, "%s%s%s%s%s",
-		pdb_url, fixed_qery_a, strict, fixed_qery_b, pat);
+	const char *url = url_query(
+		pdb_url,
+		"f", "xml",
+		"a", "search",
+		"s", strict,
+		"q", pat,
+		NUL
+	);
+	/* escape pattern? */
 	return url;
 }
 
@@ -37,7 +58,6 @@ const char *fetch_xml(const char *pat, bool strict) {
 	CURLcode res;
 	// free() url
 	const char *url = creat_url(PORTDB_URL, pat, strict);
-
 	xml cdata = { .data = 0,.size = 1 };
 	// allocate memory for NULL
 	cdata.data = calloc(1, 1);
@@ -52,6 +72,6 @@ const char *fetch_xml(const char *pat, bool strict) {
 	} else {
 		/* obsluzyc bledy */
 	}
-	free(url);
+	free((void *)url);
 	return cdata.data;
 }

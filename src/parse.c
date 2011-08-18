@@ -92,5 +92,5 @@ portdb *parse(const char *content) {
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 
-	return((portdb *)0);
+	return ((portdb *)0);
 }

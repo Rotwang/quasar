@@ -24,8 +24,6 @@ struct _portdb {
 	portdb *next;
 };
 
-
-
 void parse_elem(xmlNode *);
 portdb *parse(const char *); 
 
