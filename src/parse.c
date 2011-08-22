@@ -14,6 +14,7 @@ void parse_elem(xmlNode *a_node) {
 		parse_elem(cur_node->children);
 	}
 }
+
 void
 print_xpath_nodes(xmlNodeSetPtr nodes, FILE* output) {
     xmlNodePtr cur;
@@ -47,45 +48,40 @@ print_xpath_nodes(xmlNodeSetPtr nodes, FILE* output) {
 		    cur->name);
 	    }
 	} else {
-	    cur = nodes->nodeTab[i];    
+	    cur = nodes->nodeTab[i];
 	    fprintf(output, "= node \"%s\": type %d\n", cur->name, cur->type);
 	}
     }
 }
 
-portdb *parse(const char *content) {
+portdb *parse(xml content) {
 	xmlInitParser();
 	LIBXML_TEST_VERSION
 
-
-	const xmlChar* xpathExpr = BAD_CAST "/ports/port/files";
+	const xmlChar* xpathExpr = BAD_CAST "/ports/port";
 	xmlDocPtr doc;
 	xmlXPathContextPtr xpathCtx;
 	xmlXPathObjectPtr xpathObj;
 	
-
-	size_t length = strlen(content);
-	doc = xmlReadMemory(content, length, "noname.xml", NULL, 0);
+	doc = xmlReadMemory(content.data, content.size, "noname.xml", NULL, 0);
 	if (doc == NULL) {
-		// spawn ze error
+		return ((portdb *)0);
 	}
 
 	xpathCtx = xmlXPathNewContext(doc);
 	if (xpathCtx == NULL) {
 		xmlFreeDoc(doc); 
-		return((portdb *)0);
+		return ((portdb *)0);
 	}
 	
 	xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
-	if(xpathObj == NULL) {
+	if (xpathObj == NULL) {
 		xmlXPathFreeContext(xpathCtx); 
 		xmlFreeDoc(doc); 
 		// return error
 	}
 	
 	print_xpath_nodes(xpathObj->nodesetval, stdout);
-	
-	
 	
 	xmlXPathFreeObject(xpathObj);
 	xmlXPathFreeContext(xpathCtx);

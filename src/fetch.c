@@ -24,7 +24,7 @@ const char *url_query(const char *domain, ...) {
 	return url;
 }
 
-const char *creat_url(const char * pdb_url, const char * pat, bool s) {
+const char *creat_url(const char *pdb_url, const char *pat, bool s) {
 	char strict[6];
 	if (s)
 		strcpy(strict, "true");
@@ -38,7 +38,7 @@ const char *creat_url(const char * pdb_url, const char * pat, bool s) {
 		"q", pat,
 		NUL
 	);
-	/* escape pattern? */
+	/* curl_easy_escape() pattern? */
 	return url;
 }
 
@@ -53,7 +53,7 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
 }
 
 /* return NULL terminated portdb xml */
-const char *fetch_xml(const char *pat, bool strict) {
+xml fetch_xml(const char *pat, bool strict) {
 	CURL *curl;
 	CURLcode res;
 	// free() url
@@ -73,5 +73,5 @@ const char *fetch_xml(const char *pat, bool strict) {
 		/* obsluzyc bledy */
 	}
 	free((void *)url);
-	return cdata.data;
+	return cdata;
 }

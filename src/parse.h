@@ -6,7 +6,7 @@
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
-#include <string.h>
+#include "common.h"
 
 #ifndef LIBXML_TREE_ENABLED
 #error Tree support not compiled into libxml2!
@@ -25,6 +25,6 @@ struct _portdb {
 };
 
 void parse_elem(xmlNode *);
-portdb *parse(const char *); 
+portdb *parse(xml);
 
 #endif /* PARSE_H */
