@@ -8,9 +8,13 @@
 
 #include "common.h"
 
-#ifndef LIBXML_TREE_ENABLED
-#error Tree support not compiled into libxml2!
+#ifndef LIBXML_XPATH_ENABLED
+#error xpath support not enabled
 #endif
+
+
+#define XPATH_EXPR "/ports/port"
+#define NODE_NAME "name"
 
 typedef struct _portdb portdb;
 
@@ -24,7 +28,7 @@ struct _portdb {
 	portdb *next;
 };
 
-void parse_elem(xmlNode *);
+portdb *parse_elem(xmlNode *);
 portdb *parse(xml);
 
 #endif /* PARSE_H */
