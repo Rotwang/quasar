@@ -1,5 +1,0 @@
-playground for crux cli portdb browser
-
-dependencies:
-	curl
-	libxml2
