@@ -1,0 +1,4 @@
+#!/bin/bash
+set -x
+
+exec fakeroot pkgmk -cf ${0%/*}/pkgmk.conf $@
