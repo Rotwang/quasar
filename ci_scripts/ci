@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+die() {
+	echo $1 >&2
+	exit 1
+}
+
+crux_purge() {
+	local whitelist
+	local tainted
+	whitelist=(
+		'^expat$'
+		'^fakeroot$'
+		'^git$'
+		'^htop$'
+		'^jre$'
+		'^python$'
+		'^sqlite3$'
+		'^ccache$'
+	)
+
+	tainted=($(
+		prt-get printf '%n %p %i\n'                 |
+		awk '/yes$/ {print $1" "$2}'                |
+		grep -v '/core$'                            |
+		awk '{print $1}'                            |
+		grep -v -f <(printf "%s\n" ${whitelist[@]}) |
+		cut -d" " -f1
+	))
+
+	echo "Purging system."
+	for port in ${tainted[@]}; do
+		echo "Removing $port"
+		pkgrm $port
+	done
+}
+
+check_url() {
+	local fail=0
+	echo "Checking if $1 is available: "
+	if egrep -q '^(https?://|ftp://)' <<< "$1"; then
+		if ! wget --no-check-certificate --spider "$1"; then
+			wget --no-check-certificate "$1" -O /dev/null ||
+				fail=1
+		fi
+	elif ! [[ -e /usr/ports/contrib/$JOB_NAME/"$1" ]]; then
+		echo "it isn't"
+		fail=1
+	fi
+	[[ "$fail" -eq 1 ]] && die "Invalid source link(s)!"
+}
+
+[[ $JOB_NAME ]] || die "JOB_NAME not set!"
+
+prt-get info $JOB_NAME |
+    tee description
+echo
+sed -i -r -e \
+    '/^URL:/s|( +)(.*)$|\1<a href=\2>\2</a>|' description
+sed -i '1s|^|<pre>|'  description
+sed -i '$s|$|</pre>|' description
+
+. /usr/ports/contrib/$JOB_NAME/Pkgfile
+
+for s in ${source[@]}; do
+	check_url "$s"
+done
+
+set -x
+rm -f /var/build/packages/$JOB_NAME#*.pkg.tar.xz
+prt-get depinst $JOB_NAME $@
+retval=$?
+set +x
+
+crux_purge
+
+[[ $retval -ne 0 ]] && die "Build process failed!"
+exit $retval
