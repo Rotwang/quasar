@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use feature "say";
 use Math::BigInt lib => 'GMP';
- use List::Util "sum";
+use List::Util "sum";
 use Data::Dumper;
 
 my $x = Math::BigInt->new("100");
