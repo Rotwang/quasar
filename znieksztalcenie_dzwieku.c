@@ -34,3 +34,4 @@ int main(void) {
         fclose(wav_out);
         return EXIT_SUCCESS;
 }
+
