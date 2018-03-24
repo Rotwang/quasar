@@ -1,0 +1,10 @@
+- content: |
+    #!/usr/bin/env bash
+    exec {fh}<>/root/$(echo -n "$*" | sha1sum | awk '{print $1}').lock
+    flock --nonblock $fh || { echo "Couldn't acquire lock." >&2; exit 2; }
+    set -x
+    time timeout -k 60 900 $@
+  owner: root:root
+  path: /root/run-only-one
+  permissions: '0755'
+
