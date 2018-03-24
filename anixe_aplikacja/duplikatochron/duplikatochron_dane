@@ -1,0 +1,59 @@
+[
+    {
+        "nr_lotu" => "0123",
+        "godz_wyl" => ["10", "30"],
+        "cena" => "250",
+        "pasazer" => {
+            "imie" => "Andrzej",
+            "nazwisko" => "Miazga",
+            "adres" => {
+                "ulica" => "Hallera",
+                "nr_domu" => "12",
+                "nr_mieszkania" => "5",
+                "kod_pocztowy" => "44-343",
+                "miejscowosc" => "Wrocław",
+                "email" => 'am@wp.pl'
+            },
+            "narodowosc" => "polska",
+            "nr_do" => ["ABC", "123456"]
+        }
+    },
+    {
+        "nr_lotu" => "0987",
+        "godz_wyl" => ["11", "40"],
+        "cena" => "180",
+        "pasazer" => {
+            "imie" => "Konrad",
+            "nazwisko" => "Nowak",
+            "adres" => {
+                "ulica" => "Szewska",
+                "nr_domu" => "12",
+                "nr_mieszkania" => "17",
+                "kod_pocztowy" => "48-300",
+                "miejscowosc" => "Wrocław",
+                "email" => 'am@wp.pl'
+            },
+            "narodowosc" => "polska",
+            "nr_do" => ["FGH", "123432"]
+        }
+    },
+    {
+        "nr_lotu" => "0123",
+        "godz_wyl" => ["10", "30"],
+        "cena" => "250",
+        "pasazer" => {
+            "imie" => "Andrzej",
+            "nazwisko" => "Miazga",
+            "adres" => {
+                "ulica" => "Hallera",
+                "nr_domu" => "12",
+                "nr_mieszkania" => "5",
+                "kod_pocztowy" => "44-343",
+                "miejscowosc" => "Wrocław",
+                "email" => 'am@wp.pl'
+            },
+            "narodowosc" => "polska",
+            "nr_do" => ["ABC", "123456"]
+        }
+    }
+];

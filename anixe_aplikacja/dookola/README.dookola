@@ -1,0 +1,25 @@
+dookola.pl:
+
+Prosty serwer tcp. Wykorzystuje coreowy perlowy modol do tworzenia socketow tcp.
+
+dookola_test.pl:
+
+Prosty skrypt do przetestowanie serwera.
+
+Testowanie programu:
+
+$ ./dookola_test.pl AZ
+Azerbaijan
+$ ./dookola_test.pl NL
+Netherlands
+
+$ telnet 127.0.0.1 7070
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+PL
+Poland
+FR
+France
+fjl;srgf;sjf;sgfjs;gjr;gj
+Invalid query

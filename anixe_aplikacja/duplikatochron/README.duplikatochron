@@ -1,0 +1,71 @@
+duplikatochron.pl:
+
+Skrypt sluzacy do wykrycia podobienstw w bazie zabookowanych lotow dla danych
+pasazerow. Porownuje on kolejne pola z bazy oceniajac czy sa one dokladnie takie
+same czy podobne, pozostawiajac administratorowi ocene czy faktycznie wystepuje
+duplikat. Wykorzystywane sa tylko core-owe moduly perla. Problem ocenienia czy
+dani pasazerowie sa faktycznie zdublowani przy wzieciu pod uwage mozliwosc
+ludzkiej pomylki jest trudny, wiec oprocz doslownego porownywania pol
+wykorzystuje on proste heurystyki po czym ostateczna decyzje pozostawia 
+administratorowi bazy.
+
+duplikatochron_dane:
+
+Perlowa struktura danych sluzaca jako baza danych dla programu. Jest to tablica
+zawierajaca w kazdym z jej elementow anonimowe hashe, kazdy z elementow tablicy
+to inny pasazer.
+
+Uruchominie aplikacji:
+
+Stojac w katalogu ze skryptem i danymi:
+
+perl ./duplikatochron.pl
+
+Przykładowy output:
+
+sprawdzam parę: 0 1
+0 -> 1: identyczne pole: narodowosc
+0 -> 1: podobne pole: nr dowodu
+0 -> 1: identyczne pole: email
+0 -> 1: podobne pole nr_mieszkania
+0 -> 1: identyczne pole: nr_domu
+0 -> 1: identyczne pole: miejscowosc
+identycznych / możliwych
+4 / 14 (28.57%)
+podobnych / możliwych
+2 / 14 (14.29%)
+
+sprawdzam parę: 0 2
+0 -> 2: identyczne pole: numer lotu
+0 -> 2: identyczne pole: godziny lotu
+0 -> 2: identyczne pole: cena
+0 -> 2: identyczne pole: imie
+0 -> 2: identyczne pole: nazwisko
+0 -> 2: identyczne pole: narodowosc
+0 -> 2: identyczne pole: seria dowodu
+0 -> 2: identyczne pole: nr dowodu
+0 -> 2: identyczne pole: email
+0 -> 2: identyczne pole: nr_mieszkania
+0 -> 2: identyczne pole: nr_domu
+0 -> 2: identyczne pole: ulica
+0 -> 2: identyczne pole: miejscowosc
+0 -> 2: identyczne pole: kod_pocztowy
+identycznych / możliwych
+14 / 14 (100.00%)
+podobnych / możliwych
+0 / 14 (0.00%)
+
+sprawdzam parę: 1 2
+1 -> 2: identyczne pole: narodowosc
+1 -> 2: podobne pole: nr dowodu
+1 -> 2: identyczne pole: email
+1 -> 2: podobne pole nr_mieszkania
+1 -> 2: identyczne pole: nr_domu
+1 -> 2: identyczne pole: miejscowosc
+identycznych / możliwych
+4 / 14 (28.57%)
+podobnych / możliwych
+2 / 14 (14.29%)
+
+Jesli podobienstwa sa w okolicach 50%, w przyblizeniu duplikat nie wystepuje,
+Powyżej 50% administrator (czlowiek) powinien sie przyjzec rozpatrywanym polom.
